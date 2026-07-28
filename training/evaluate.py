@@ -1,14 +1,3 @@
-"""
-evaluate.py
-Evaluates the trained emotion recognition model on the test set.
-
-Generates:
-    models/confusion_matrix.png
-    models/classification_report.txt
-
-Prints accuracy, precision, recall, and F1-score to the console.
-"""
-
 import os
 import sys
 import numpy as np
@@ -31,7 +20,6 @@ from utils import (
 
 
 def evaluate_folder_model(model):
-    """Evaluates the model using the folder-based test dataset."""
     test_datagen = ImageDataGenerator(rescale=1.0 / 255.0)
 
     test_generator = test_datagen.flow_from_directory(
@@ -52,7 +40,6 @@ def evaluate_folder_model(model):
 
 
 def evaluate_csv_model(model):
-    """Evaluates the model using the fer2013.csv test split."""
     _, _, X_test, y_test = load_csv_dataset()
     predictions = model.predict(X_test, verbose=1)
     y_pred = np.argmax(predictions, axis=1)

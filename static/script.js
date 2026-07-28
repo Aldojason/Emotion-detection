@@ -1,7 +1,3 @@
-/**
- * script.js
- * Polls the Flask /status endpoint and updates the dashboard UI in real time.
- */
 
 const POLL_INTERVAL_MS = 700;
 

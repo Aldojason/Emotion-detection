@@ -1,9 +1,3 @@
-/* ---------------------------------------------------------------------- */
-/* Facial Emotion Recognition — dark, instrument-panel UI                 */
-/* Palette: #0B0E11 base / #12161B panel / #1B2128 card / #4ADE80 accent  */
-/*          #F5C451 warn / #F1F3F5 text-hi / #8B95A1 text-lo              */
-/* Type: Space Grotesk (display) + JetBrains Mono (data/utility)          */
-/* ---------------------------------------------------------------------- */
 
 :root {
   --bg: #0b0e11;
@@ -31,7 +25,6 @@ body {
   position: relative;
 }
 
-/* Ambient scanline texture — the signature atmosphere */
 .scanlines {
   position: fixed;
   inset: 0;
@@ -46,8 +39,6 @@ body {
   );
   mix-blend-mode: overlay;
 }
-
-/* ---------------------------- Topbar ---------------------------- */
 
 .topbar {
   position: relative;
@@ -105,7 +96,6 @@ body {
 .dot.ok { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
 .dot.err { background: var(--danger); box-shadow: 0 0 8px var(--danger); }
 
-/* ---------------------------- Layout ---------------------------- */
 
 .layout {
   position: relative;
@@ -118,7 +108,7 @@ body {
   margin: 0 auto;
 }
 
-/* ---------------------------- Feed panel ---------------------------- */
+
 
 .feed-panel { display: flex; flex-direction: column; gap: 10px; }
 
@@ -182,8 +172,7 @@ body {
   padding: 20px;
 }
 
-/* The [hidden] attribute must win over the display:flex above —
-   otherwise the overlay stays visible even when JS sets hidden=true. */
+
 .video-overlay[hidden] {
   display: none;
 }
@@ -194,7 +183,7 @@ body {
   font-size: 15px;
 }
 
-/* ---------------------------- Data panel ---------------------------- */
+
 
 .data-panel { display: flex; flex-direction: column; gap: 16px; }
 

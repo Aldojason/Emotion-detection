@@ -74,7 +74,6 @@ def get_folder_generators():
 
 
 def plot_history(history):
-    """Saves training curves as PNG images."""
     acc = history.history.get("accuracy", [])
     val_acc = history.history.get("val_accuracy", [])
     loss = history.history.get("loss", [])
@@ -142,7 +141,6 @@ def train_with_folder_data():
 
 
 def train_with_csv_data():
-    """Trains the model using the fer2013.csv dataset."""
     X_train, y_train, X_test, y_test = load_csv_dataset()
 
     datagen = ImageDataGenerator(
@@ -196,12 +194,6 @@ def main():
     else:
         model, history = train_with_csv_data()
 
-    # ModelCheckpoint already saved the BEST model (by val_accuracy) to
-    # MODEL_PATH during training. Do not overwrite it with the in-memory
-    # model here — if EarlyStopping never triggered (training ran all
-    # EPOCHS), the in-memory weights are just the *last* epoch's, which
-    # can be worse than the checkpointed best. Only fall back to saving
-    # the in-memory model if, for some reason, no checkpoint file exists.
     if os.path.isfile(MODEL_PATH):
         print(f"Best model already saved by ModelCheckpoint to: {MODEL_PATH}")
     else:

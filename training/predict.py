@@ -1,18 +1,3 @@
-"""
-predict.py
-Real-time facial emotion recognition using a webcam feed.
-
-Controls:
-    Q - quit the application
-    S - save a screenshot of the current frame
-
-Displays for each detected face:
-    - Bounding box (green rectangle)
-    - Predicted emotion
-    - Confidence percentage
-    - Live FPS counter
-"""
-
 import os
 import sys
 import time
@@ -34,8 +19,6 @@ SCREENSHOT_DIR = os.path.join(
 
 
 class EmotionPredictor:
-    """Encapsulates model loading, face detection, and prediction logic."""
-
     def __init__(self, model_path=MODEL_PATH):
         if not os.path.isfile(model_path):
             raise FileNotFoundError(
@@ -52,7 +35,6 @@ class EmotionPredictor:
         print("Model and face detector loaded successfully.")
 
     def detect_faces(self, gray_frame):
-        """Detects faces in a grayscale frame using Haar Cascade."""
         faces = self.face_cascade.detectMultiScale(
             gray_frame,
             scaleFactor=1.1,
@@ -62,12 +44,6 @@ class EmotionPredictor:
         return faces
 
     def predict_emotion(self, face_img):
-        """
-        Predicts the emotion for a single cropped face image.
-
-        Returns:
-            (label, confidence): predicted emotion label and confidence (0-100)
-        """
         processed = preprocess_face(face_img)
         predictions = self.model.predict(processed, verbose=0)[0]
         idx = int(np.argmax(predictions))
@@ -77,7 +53,6 @@ class EmotionPredictor:
 
 
 def run_webcam_demo(camera_index=0):
-    """Runs the real-time webcam emotion recognition loop."""
     os.makedirs(SCREENSHOT_DIR, exist_ok=True)
 
     try:
