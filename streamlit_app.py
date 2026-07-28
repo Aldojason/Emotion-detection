@@ -185,11 +185,18 @@ class EmotionVideoProcessor(VideoProcessorBase):
 col_video, col_data = st.columns([2, 1])
 
 # Public STUN server for NAT traversal. If viewers on restrictive networks
-# (corporate/school Wi-Fi) can't connect, you'll need a TURN server too —
-# see the note at the bottom of this file / the deployment guide.
-RTC_CONFIGURATION = RTCConfiguration(
-    {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
-)
+# (corporate/school Wi-Fi) can't connect, you can add your TURN server credentials
+# to the Streamlit secrets panel (turn_url, turn_username, turn_credential).
+ice_servers = [{"urls": ["stun:stun.l.google.com:19302"]}]
+
+if "turn_url" in st.secrets:
+    ice_servers.append({
+        "urls": st.secrets["turn_url"],
+        "username": st.secrets.get("turn_username", ""),
+        "credential": st.secrets.get("turn_credential", ""),
+    })
+
+RTC_CONFIGURATION = RTCConfiguration({"iceServers": ice_servers})
 
 with col_video:
     ctx = webrtc_streamer(
