@@ -1,0 +1,62 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# --- Virtual environments ---
+venv/
+env/
+ENV/
+.venv/
+
+# --- Dataset (large, don't commit) ---
+dataset/train/*/*.jpg
+dataset/train/*/*.png
+dataset/test/*/*.jpg
+dataset/test/*/*.png
+dataset/fer2013.csv
+dataset/*.csv
+!dataset/.gitkeep
+
+# --- Trained models & generated artifacts ---
+models/*.h5
+models/*.keras
+models/*.png
+models/*.txt
+!models/.gitkeep
+
+# --- Screenshots ---
+screenshots/*.png
+screenshots/*.jpg
+!screenshots/.gitkeep
+
+# --- Logs / checkpoints ---
+*.log
+logs/
+checkpoints/
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+
+# --- OS files ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Editors ---
+.vscode/
+.idea/
+*.swp
+
+# --- Flask ---
+instance/
+.flaskenv
+
+# --- Environment variables ---
+.env

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Facial Emotion Recognition</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="scanlines"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">◈</span>
+      <div class="brand-text">
+        <h1>Facial Emotion Recognition</h1>
+        <p class="brand-sub">Real-time CNN inference &middot; FER2013</p>
+      </div>
+    </div>
+    <div class="status-pill" id="status-pill">
+      <span class="dot" id="status-dot"></span>
+      <span id="status-text">Connecting&hellip;</span>
+    </div>
+  </header>
+
+  <main class="layout">
+
+    <section class="feed-panel">
+      <div class="panel-label">
+        <span>LIVE FEED</span>
+        <span class="fps-badge" id="fps-badge">-- FPS</span>
+      </div>
+
+      <div class="video-frame">
+        <img id="video-feed" src="{{ url_for('video_feed') }}" alt="Live webcam feed">
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+        <div class="video-overlay" id="video-overlay" hidden>
+          <p id="overlay-message">Camera unavailable</p>
+        </div>
+      </div>
+    </section>
+
+    <aside class="data-panel">
+
+      <div class="card emotion-card">
+        <span class="card-eyebrow">Detected emotion</span>
+        <h2 id="emotion-value">N/A</h2>
+        <div class="confidence-track">
+          <div class="confidence-fill" id="confidence-fill"></div>
+        </div>
+        <span class="confidence-label" id="confidence-label">0% confidence</span>
+      </div>
+
+      <div class="card metrics-card">
+        <span class="card-eyebrow">System metrics</span>
+        <ul class="metric-list">
+          <li>
+            <span class="metric-key">Model</span>
+            <span class="metric-val" id="metric-model">--</span>
+          </li>
+          <li>
+            <span class="metric-key">Camera</span>
+            <span class="metric-val" id="metric-camera">--</span>
+          </li>
+          <li>
+            <span class="metric-key">Faces in frame</span>
+            <span class="metric-val" id="metric-faces">0</span>
+          </li>
+          <li>
+            <span class="metric-key">Frame rate</span>
+            <span class="metric-val" id="metric-fps">0.0 FPS</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card legend-card">
+        <span class="card-eyebrow">Emotion classes</span>
+        <div class="legend-grid">
+          <span>Angry</span><span>Disgust</span><span>Fear</span><span>Happy</span>
+          <span>Neutral</span><span>Sad</span><span>Surprise</span>
+        </div>
+      </div>
+
+      <div class="card notice-card" id="error-card" hidden>
+        <span class="card-eyebrow">Notice</span>
+        <p id="error-text"></p>
+      </div>
+
+    </aside>
+  </main>
+
+  <footer class="footer">
+    <p>Facial Emotion Recognition System &middot; CNN trained on FER2013 &middot; TensorFlow + OpenCV + Flask</p>
+  </footer>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
