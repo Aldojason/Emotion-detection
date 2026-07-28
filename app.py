@@ -1,12 +1,3 @@
-"""
-app.py
-Flask web application for real-time Facial Emotion Recognition.
-
-Streams the webcam feed with live face detection and emotion prediction
-overlaid, and exposes a JSON status endpoint for the frontend to poll
-current emotion / confidence / FPS.
-"""
-
 import os
 import sys
 import time
@@ -24,13 +15,8 @@ from utils import (
 
 app = Flask(__name__)
 
-# ---------------------------------------------------------------------------
-# Global application state
-# ---------------------------------------------------------------------------
 class AppState:
-    """Thread-safe container for shared state between the video stream
-    thread and the Flask request handlers."""
-
+    
     def __init__(self):
         self.lock = threading.Lock()
         self.camera_available = False
