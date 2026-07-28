@@ -105,33 +105,61 @@ class EmotionVideoProcessor(VideoProcessorBase):
         self.face_cascade = face_cascade
         self.lock = threading.Lock()
         self.latest = {"faces": [], "count": 0}
+        self.frame_count = 0
+        self.cached_faces = []
+        self.cached_results = []
 
     def recv(self, frame):
         img = frame.to_ndarray(format="bgr24")
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-        try:
-            faces = self.face_cascade.detectMultiScale(
-                gray, scaleFactor=1.1, minNeighbors=5, minSize=(48, 48)
-            )
-        except cv2.error:
-            faces = []
-
-        results = []
-        for (x, y, w, h) in faces:
-            roi = gray[y:y + h, x:x + w]
-            if roi.size == 0:
-                continue
+        
+        self.frame_count += 1
+        # Run detection and prediction every 3 frames to prevent WebRTC timeout & save CPU
+        if self.frame_count % 3 == 0:
+            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
             try:
-                processed = preprocess_face(roi)
-                predictions = self.model.predict(processed, verbose=0)[0]
-                idx = int(np.argmax(predictions))
-                label = EMOTION_LABELS[idx]
-                confidence = float(predictions[idx]) * 100.0
-            except Exception:
-                continue
+                faces = self.face_cascade.detectMultiScale(
+                    gray, scaleFactor=1.1, minNeighbors=5, minSize=(48, 48)
+                )
+            except cv2.error:
+                faces = []
 
-            display_label = EMOTION_LABELS_DISPLAY.get(label, label)
+            results = []
+            for (x, y, w, h) in faces:
+                roi = gray[y:y + h, x:x + w]
+                if roi.size == 0:
+                    continue
+                try:
+                    processed = preprocess_face(roi)
+                    # Directly calling model is much faster than model.predict()
+                    predictions = self.model(processed, training=False).numpy()[0]
+                    idx = int(np.argmax(predictions))
+                    label = EMOTION_LABELS[idx]
+                    confidence = float(predictions[idx]) * 100.0
+                except Exception:
+                    continue
+
+                display_label = EMOTION_LABELS_DISPLAY.get(label, label)
+                results.append({
+                    "rect": (x, y, w, h),
+                    "label": display_label,
+                    "confidence": confidence
+                })
+
+            self.cached_faces = faces
+            self.cached_results = results
+
+            # Update latest info for the Streamlit UI metrics panel
+            with self.lock:
+                self.latest = {
+                    "faces": [{"label": r["label"], "confidence": round(r["confidence"], 1)} for r in results],
+                    "count": len(faces)
+                }
+
+        # Draw cached results on skipped frames to keep overlay smooth
+        for r in self.cached_results:
+            (x, y, w, h) = r["rect"]
+            display_label = r["label"]
+            confidence = r["confidence"]
 
             cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
             text = f"{display_label}: {confidence:.1f}%"
@@ -140,14 +168,9 @@ class EmotionVideoProcessor(VideoProcessorBase):
             cv2.putText(img, text, (x + 4, y - 6),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 2)
 
-            results.append({"label": display_label, "confidence": round(confidence, 1)})
-
-        if len(faces) == 0:
+        if len(self.cached_faces) == 0:
             cv2.putText(img, "No face detected", (20, 40),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
-
-        with self.lock:
-            self.latest = {"faces": results, "count": len(faces)}
 
         return av.VideoFrame.from_ndarray(img, format="bgr24")
 
